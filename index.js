@@ -1,6 +1,10 @@
+import "dotenv/config"
 import express from "express"
 import morgan from "morgan"
 import indexRoutes from "./routes/index.routes.js"
+import { connectDB } from "./utils/db.js"
+
+connectDB()
 
 const app = express()
 
