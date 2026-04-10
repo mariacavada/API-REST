@@ -12,13 +12,17 @@ export const getUsers = async (req,res) => {
 }
 export const postUser = async (req,res) => {
      const {name, username, password} = req.body
-     const userInstance = new User(name, username, password)
+     const user = new User({name, username, password})
      await user.save()
      res.json(user)
 }
 export const putUser = async (req,res) => {
- //findyIDandUpdate
+     const id  = req.params.id
+     const user = await User.findByIdAndUpdate(id, req.body, { new: true })
+     res.json(user)
 }
 export const delUser = async (req,res) => {
-//find.byIDandDelete
+     const id  = req.params.id
+     const user = await User.findByIdAndDelete(id)
+     res.json(user)
 }
