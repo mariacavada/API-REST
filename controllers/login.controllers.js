@@ -1,11 +1,12 @@
 import User from "../models/users.model.js"
 
-export const login = (req,res) =>{
+export const login = async (req,res) =>{
      const {username, password} = req.body
-     const user = User.findOne({username:username})
+     const user = await User.findOne({username:username})
+     if (!user) return res.status(404).json({login:false, msg: "Usuario no encontrado", user:{}})
      if (user.password == password){
-          res.json({login:true, msg: "Es Correcto Juan Pablo", user:user})
+          res.json({login:true, msg: "Login correcto", user:user})
      }else{
-          res.status(404).json({login:false, msg: "Es Incorrecto Juan Pablo", user:{}})
+          res.status(401).json({login:false, msg: "Contraseña incorrecta", user:{}})
      }
 }

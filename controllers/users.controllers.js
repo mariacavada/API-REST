@@ -17,8 +17,8 @@ export const postUser = async (req,res) => {
      res.json(user)
 }
 export const putUser = async (req,res) => {
-     const id  = req.params.id
-     const user = await User.findByIdAndUpdate(id, req.body, { new: true })
+     const {name, username, password} = req.body
+     const user = await User.findByIdAndUpdate(req.params.id, { name, username, password }, {new: true})
      res.json(user)
 }
 export const delUser = async (req,res) => {
