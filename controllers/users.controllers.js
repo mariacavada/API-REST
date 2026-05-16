@@ -1,28 +1,53 @@
-import User from "../models/users.model.js"
+import User from "../models/user.models.js"
+import { hashPassword } from "../utils/hash.js"
 
+export const getUsers = async (req, res) => {
+    try {
+        const users = await User.find()
+        res.json(users)
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
+}
 
-export const getUser = async (req,res) => {
-     const users = await User.find()
-     res.json(users)
+export const getUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        if (!user) return res.status(404).json({ msg: "Usuario no encontrado" })
+        res.json(user)
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
 }
-export const getUsers = async (req,res) => {
-     const id = req.params.id
-     const user = await User.findById(id)
-     res.json(user)
+
+export const postUsers = async (req, res) => {
+    try {
+        const newUser = new User({ ...req.body, password: hashPassword(req.body.password) })
+        await newUser.save()
+        res.status(201).json(newUser)
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
 }
-export const postUser = async (req,res) => {
-     const {name, username, password} = req.body
-     const user = new User({name, username, password})
-     await user.save()
-     res.json(user)
+
+export const putUser = async (req, res) => {
+    try {
+        const data = { ...req.body }
+        if (data.password) data.password = hashPassword(data.password)
+        const user = await User.findByIdAndUpdate(req.params.id, data, { new: true })
+        if (!user) return res.status(404).json({ msg: "Usuario no encontrado" })
+        res.json(user)
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
 }
-export const putUser = async (req,res) => {
-     const {name, username, password} = req.body
-     const user = await User.findByIdAndUpdate(req.params.id, { name, username, password }, {new: true})
-     res.json(user)
-}
-export const delUser = async (req,res) => {
-     const id  = req.params.id
-     const user = await User.findByIdAndDelete(id)
-     res.json(user)
+
+export const delUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id)
+        if (!user) return res.status(404).json({ msg: "Usuario no encontrado" })
+        res.json({ msg: "Usuario eliminado" })
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
 }

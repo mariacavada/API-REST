@@ -1,11 +1,10 @@
-
-import { Router } from "express";
-import { abc, hola, womp } from "../controllers/index.controllers.js";
+import { Router } from "express"
+import { home, marco, ping } from "../controllers/index.controllers.js"
 
 const router = Router()
 
-router.get("/", hola)
-router.get("/womp", womp)
-router.get("/abc", abc)
+router.get("/", home)
+router.get("/marco", marco)
+router.get("/ping", ping)
 
 export default router
