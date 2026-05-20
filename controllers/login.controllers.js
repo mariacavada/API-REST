@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken"
 import User from "../models/users.model.js"
 import { verifyPassword } from "../utils/hash.js"
 
@@ -7,7 +8,12 @@ export const login = async (req, res) => {
         const user = await User.findOne({ username })
         if (!user) return res.status(404).json({ login: false, msg: "Usuario no encontrado", user: {} })
         if (verifyPassword(password, user.password)) {
-            res.json({ login: true, msg: "Ok", user })
+            const token = jwt.sign(
+                { id: user._id, username: user.username },
+                process.env.JWT,
+                { expiresIn: "1d" }
+            )
+            res.json({ login: true, msg: "Ok", token, user })
         } else {
             res.status(401).json({ login: false, msg: "Contraseña incorrecta", user: {} })
         }
