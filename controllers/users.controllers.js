@@ -1,5 +1,5 @@
-import User from "../models/user.models.js"
-import { hashPassword } from "../utils/hash.js"
+import User from "../models/users.model.js"
+import { hashPassword } from "../utils/Hash.js"
 
 export const getUsers = async (req, res) => {
     try {

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import User from "../models/users.model.js"
-import { verifyPassword } from "../utils/hash.js"
+import { verifyPassword } from "../utils/Hash.js"
 
 export const login = async (req, res) => {
     try {
