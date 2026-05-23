@@ -1,5 +1,5 @@
 import User from "../models/users.model.js"
-import { hashPassword } from "../utils/Hash.js"
+import { getSalt, hash } from "../utils/Hash.js"
 
 export const getUsers = async (req, res) => {
     try {
@@ -22,7 +22,8 @@ export const getUser = async (req, res) => {
 
 export const postUsers = async (req, res) => {
     try {
-        const newUser = new User({ ...req.body, password: hashPassword(req.body.password) })
+        const salt = getSalt()
+        const newUser = new User({ ...req.body, password: hash(req.body.password, salt) })
         await newUser.save()
         res.status(201).json(newUser)
     } catch (error) {
@@ -33,7 +34,10 @@ export const postUsers = async (req, res) => {
 export const putUser = async (req, res) => {
     try {
         const data = { ...req.body }
-        if (data.password) data.password = hashPassword(data.password)
+        if (data.password) {
+            const salt = getSalt()
+            data.password = hash(data.password, salt)
+        }
         const user = await User.findByIdAndUpdate(req.params.id, data, { new: true })
         if (!user) return res.status(404).json({ msg: "Usuario no encontrado" })
         res.json(user)

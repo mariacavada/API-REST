@@ -1,16 +1,13 @@
-import crypto from 'crypto'
+import crypto from "crypto";
 
-const PEPPER = process.env.PEPPER || 'mi_pimienta_secreta'
-
-export const hashPassword = (password) => {
-    const salt = crypto.randomBytes(16).toString('hex')
-    const hash = crypto.scryptSync(password + PEPPER, salt, 64).toString('hex')
-    return `${salt}:${hash}`
+export const getSalt = () => {
+    const size = Number(process.env.SALT_SIZE)
+    return crypto.randomBytes(5 * size).toString("base64url").substring(0, size)
 }
 
-export const verifyPassword = (password, stored) => {
-    const [salt, hash] = stored.split(':')
-    const hashToVerify = crypto.scryptSync(password + PEPPER, salt, 64)
-    const storedHash = Buffer.from(hash, 'hex')
-    return crypto.timingSafeEqual(hashToVerify, storedHash)
+export const hash = (password, salt) => {
+    const pepper = process.env.PEPPER
+    const hashing = crypto.createHash("sha512")
+    const hashed = hashing.update(salt + password + pepper).digest("base64url")
+    return salt + hashed
 }
