@@ -4,6 +4,7 @@ import { validateJWT } from "../utils/jwt.js"
 
 const router = Router()
 
+router.post("/register", postUsers)
 router.get("/users", validateJWT, getUsers)
 router.get("/users/:id", validateJWT, getUser)
 router.post("/users", validateJWT, postUsers)
